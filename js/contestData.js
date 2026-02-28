@@ -104,13 +104,13 @@ function createCodeChefContest(date) {
   let contestName;
 
   if (dayOfMonth <= 7) {
-    contestName = `Long Challenge - ${getMonthName(date)} 2025`;
+    contestName = `Long Challenge - ${getMonthName(date)} ${date.getFullYear()}`;
   } else if (dayOfMonth > 7 && dayOfMonth <= 14) {
-    contestName = `Cook-Off - ${getMonthName(date)} 2025`;
+    contestName = `Cook-Off - ${getMonthName(date)} ${date.getFullYear()}`;
   } else if (dayOfMonth > 14 && dayOfMonth <= 21) {
-    contestName = `Starters - ${getMonthName(date)} 2025`;
+    contestName = `Starters - ${getMonthName(date)} ${date.getFullYear()}`;
   } else {
-    contestName = `Lunchtime - ${getMonthName(date)} 2025`;
+    contestName = `Lunchtime - ${getMonthName(date)} ${date.getFullYear()}`;
   }
 
   return {

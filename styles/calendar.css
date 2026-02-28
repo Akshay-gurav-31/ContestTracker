@@ -60,7 +60,7 @@
 }
 
 .calendar-day-name {
-  padding: 1rem 0.5rem;
+  padding: 0.75rem 0.5rem;
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -81,14 +81,14 @@
 }
 
 .calendar-day {
-  min-height: 100px;
-  aspect-ratio: 1/1;
+  min-height: 80px;
   display: flex;
   flex-direction: column;
-  padding: 0.75rem;
+  align-items: center;
+  padding: 0.5rem;
   background-color: #ffffff;
   position: relative;
-  cursor: default;
+  cursor: pointer;
   transition: background-color 0.2s;
 }
 
@@ -99,7 +99,6 @@
 .calendar-day:hover {
   background-color: #f8fafc;
   z-index: 50;
-  /* Higher than neighbors */
 }
 
 .dark .calendar-day:hover {
@@ -155,33 +154,29 @@
   transform: scale(1.2);
 }
 
-/* Popover - Rock Solid Styling */
+/* ✅ FIXED Popover Styling */
 .calendar-popover {
   position: fixed;
-  /* JS handled */
   background-color: #ffffff !important;
   color: #0f172a !important;
-  border-radius: 12px;
-  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.25), 0 0 1px 1px rgba(0, 0, 0, 0.05);
-  padding: 1.25rem;
-  min-width: 280px;
-  max-width: 360px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  min-width: 220px;
+  max-width: 280px;
   width: max-content;
   z-index: 2147483647 !important;
-  /* Absolute max */
   display: none;
   border: 1px solid rgba(0, 0, 0, 0.1);
   pointer-events: none;
-  opacity: 0;
+  opacity: 1 !important;
   box-sizing: border-box !important;
-  overflow: hidden;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  overflow: visible !important;
 }
 
 .calendar-popover.visible {
   display: block;
-  opacity: 1 !important;
+  /* ✅ Bas display toggle hoga, opacity nahi */
 }
 
 .dark .calendar-popover {
@@ -226,32 +221,32 @@
 }
 
 .popover-event {
-  padding: 0.75rem;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.03);
-  border-left: 4px solid var(--accent-color, #3b82f6);
+  padding: 0.5rem;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  border-left: 3px solid var(--accent-color, #3b82f6);
   transition: background-color 0.2s;
 }
 
 .dark .popover-event {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: #334155;
 }
 
 .popover-event-platform {
-  font-size: 0.65rem;
-  font-weight: 900;
+  font-size: 0.6rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
   color: var(--accent-color, #3b82f6);
 }
 
 .popover-event-name {
-  font-size: 0.875rem;
-  font-weight: 700;
-  line-height: 1.4;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.3;
   color: #0f172a;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
   white-space: normal;
   word-break: break-word;
 }

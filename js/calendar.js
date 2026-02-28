@@ -1,4 +1,3 @@
-
 // Calendar functionality
 
 /**
@@ -10,23 +9,16 @@ export function initCalendar(contests) {
   let currentMonth = today.getMonth();
   let currentYear = today.getFullYear();
 
-  // Update month display
   updateMonthDisplay(currentMonth, currentYear);
-
-  // Generate calendar for current month
   generateCalendar(currentMonth, currentYear, contests);
 
-  // Set up next/prev month buttons
   const prevBtn = document.getElementById('prev-month');
   const nextBtn = document.getElementById('next-month');
 
   if (prevBtn) {
     prevBtn.onclick = () => {
       currentMonth--;
-      if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-      }
+      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
       updateMonthDisplay(currentMonth, currentYear);
       generateCalendar(currentMonth, currentYear, contests);
     };
@@ -35,18 +27,16 @@ export function initCalendar(contests) {
   if (nextBtn) {
     nextBtn.onclick = () => {
       currentMonth++;
-      if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-      }
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
       updateMonthDisplay(currentMonth, currentYear);
       generateCalendar(currentMonth, currentYear, contests);
     };
   }
 
-  // --- Robust Dynamic Popup Positioning Logic ---
+  // --- ✅ FIXED: Robust Dynamic Popup Positioning ---
   const calendarEl = document.getElementById('calendar');
   if (calendarEl) {
+
     calendarEl.onmouseover = (e) => {
       const dayCell = e.target.closest('.calendar-day');
       if (!dayCell) return;
@@ -54,45 +44,51 @@ export function initCalendar(contests) {
       const popover = dayCell.querySelector('.calendar-popover');
       if (!popover) return;
 
-      // Only show if there are events
       const eventDots = dayCell.querySelector('.date-events');
       if (!eventDots || eventDots.children.length === 0) return;
 
-      // 1. Show and prepare for measurement
-      popover.style.display = 'block';
+      // Step 1: Show invisibly to measure size
       popover.style.visibility = 'hidden';
+      popover.style.display = 'block';
       popover.style.position = 'fixed';
-      popover.classList.add('visible');
+      popover.style.left = '0px';
+      popover.style.top = '0px';
 
+      // Step 2: Measure
       const triggerRect = dayCell.getBoundingClientRect();
-      const popoverRect = popover.getBoundingClientRect();
-
-      // Make it actually visible now that we have the size
-      popover.style.visibility = 'visible';
+      const popoverWidth = popover.offsetWidth;
+      const popoverHeight = popover.offsetHeight;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       const margin = 10;
 
-      let left = triggerRect.left + (triggerRect.width / 2) - (popoverRect.width / 2);
-      let top = triggerRect.top - popoverRect.height - 12;
+      // ✅ Step 3: Smart Left — prefer RIGHT side of cell
+      let left = triggerRect.right + 8;
 
-      // Rock-solid Clamping
-      left = Math.max(margin, Math.min(left, viewportWidth - popoverRect.width - margin));
-
-      if (top < margin) {
-        top = triggerRect.bottom + 12; // Flipping below 
-        if (top + popoverRect.height > viewportHeight - margin) {
-          top = viewportHeight - popoverRect.height - margin;
-        }
+      // Agar right mein fit nahi hota → left side mein dikhao
+      if (left + popoverWidth > viewportWidth - margin) {
+        left = triggerRect.left - popoverWidth - 8;
       }
 
-      // Final sanity check for bottom overflow
-      if (top + popoverRect.height > viewportHeight - margin) {
-        top = viewportHeight - popoverRect.height - margin;
+      // Hard clamp — kabhi off-screen nahi jayega
+      left = Math.max(margin, Math.min(left, viewportWidth - popoverWidth - margin));
+
+      // ✅ Step 4: Smart Top — cell ke saath align karo
+      let top = triggerRect.top;
+
+      // Agar neeche overflow ho → upar se align karo
+      if (top + popoverHeight > viewportHeight - margin) {
+        top = triggerRect.bottom - popoverHeight;
       }
 
+      // Hard clamp
+      top = Math.max(margin, Math.min(top, viewportHeight - popoverHeight - margin));
+
+      // Step 5: Apply aur show karo
       popover.style.left = `${Math.round(left)}px`;
       popover.style.top = `${Math.round(top)}px`;
+      popover.style.visibility = 'visible';
+      popover.classList.add('visible');
     };
 
     calendarEl.onmouseout = (e) => {
@@ -103,14 +99,14 @@ export function initCalendar(contests) {
       const popover = dayCell.querySelector('.calendar-popover');
       if (popover) {
         popover.classList.remove('visible');
-        popover.style.display = 'none'; // Instant hide
+        popover.style.display = 'none';
       }
     };
 
     calendarEl.onmouseleave = () => {
       document.querySelectorAll('.calendar-popover').forEach(p => {
         p.classList.remove('visible');
-        p.style.display = 'none'; // Instant hide
+        p.style.display = 'none';
       });
     };
   }
@@ -118,8 +114,6 @@ export function initCalendar(contests) {
 
 /**
  * Update the month and year display
- * @param {number} month Month number (0-11)
- * @param {number} year Year
  */
 function updateMonthDisplay(month, year) {
   const monthNames = [
@@ -134,9 +128,6 @@ function updateMonthDisplay(month, year) {
 
 /**
  * Generate calendar for specified month and year
- * @param {number} month Month number (0-11)
- * @param {number} year Year
- * @param {Array} contests Array of contest objects
  */
 function generateCalendar(month, year, contests) {
   const calendarEl = document.getElementById('calendar');
@@ -179,68 +170,65 @@ function generateCalendar(month, year, contests) {
 
 /**
  * Create HTML for a calendar date cell
- * @param {number} day Day number
- * @param {Date} date Date object
- * @param {Array} events Contests for this date
- * @param {boolean} otherMonth Whether date is from previous/next month
- * @param {boolean} isToday Whether date is today
- * @param {number} dayOfWeek Day of week (0-6)
- * @returns {string} HTML string
  */
 function createCalendarDateHTML(day, date, events, otherMonth = false, isToday = false, dayOfWeek = 0) {
   const classNames = ['calendar-day', `col-${dayOfWeek}`];
   if (otherMonth) classNames.push('other-month');
   if (isToday) classNames.push('today');
 
-  let eventDotsHTML = events.map(e => `<div class="date-event-dot ${e.platform.toLowerCase()}" style="background-color: ${getPlatformColor(e.platform)}"></div>`).join('');
-  let popoverHTML = '';
+  // ✅ Unique dots per platform (no duplicates)
+  const seenPlatforms = new Set();
+  let eventDotsHTML = '';
+  events.forEach(e => {
+    const platform = e.platform.toLowerCase();
+    if (!seenPlatforms.has(platform)) {
+      seenPlatforms.add(platform);
+      eventDotsHTML += `<div class="date-event-dot ${platform}" style="background-color: ${getPlatformColor(platform)}"></div>`;
+    }
+  });
 
+  let popoverHTML = '';
   if (events.length > 0) {
     popoverHTML = `
-        <div class="calendar-popover">
-          <div class="calendar-popover-date">${formatDate(date)}</div>
-          <div class="calendar-popover-events">
-            ${events.map(e => `
-              <div class="popover-event" style="--accent-color: ${getPlatformColor(e.platform)}">
-                <div class="popover-event-platform" style="color: ${getPlatformColor(e.platform)}">${e.platform.toUpperCase()}</div>
-                <div class="popover-event-name">${e.name}</div>
-                <div class="popover-event-time">${formatTime(e.startTime)} - ${formatTime(e.endTime)}</div>
-              </div>
-            `).join('')}
-          </div>
+      <div class="calendar-popover">
+        <div class="calendar-popover-date">${formatDate(date)}</div>
+        <div class="calendar-popover-events">
+          ${events.map(e => `
+            <div class="popover-event" style="--accent-color: ${getPlatformColor(e.platform)}">
+              <div class="popover-event-platform" style="color: ${getPlatformColor(e.platform)}">${e.platform.toUpperCase()}</div>
+              <div class="popover-event-name">${e.name}</div>
+              <div class="popover-event-time">${formatTime(e.startTime)} - ${formatTime(e.endTime)}</div>
+            </div>
+          `).join('')}
         </div>
-      `;
+      </div>
+    `;
   }
 
   return `
-      <div class="${classNames.join(' ')}">
-        <div class="date-number">${day}</div>
-        <div class="date-events text-center flex flex-wrap gap-1 justify-center">${eventDotsHTML}</div>
-        ${popoverHTML}
-      </div>
-    `;
+    <div class="${classNames.join(' ')}">
+      <div class="date-number">${day}</div>
+      <div class="date-events text-center flex flex-wrap gap-1 justify-center">${eventDotsHTML}</div>
+      ${popoverHTML}
+    </div>
+  `;
 }
 
 /**
  * Get color for a platform
- * @param {string} platform Platform name
- * @returns {string} Hex color
  */
 function getPlatformColor(platform) {
   const colors = {
-    'leetcode': '#2559f4',
+    'leetcode': '#e74c3c',
     'codechef': '#f09c42',
     'gfg': '#2ecc71',
-    'codeforces': '#e74c3c'
+    'codeforces': '#2559f4'
   };
   return colors[platform.toLowerCase()] || '#94a3b8';
 }
 
 /**
  * Get contests occurring on a specific date
- * @param {Date} date Date object
- * @param {Array} contests Array of contests
- * @returns {Array} Filtered contests
  */
 function getContestsForDate(date, contests) {
   if (!contests) return [];
@@ -254,8 +242,6 @@ function getContestsForDate(date, contests) {
 
 /**
  * Format date for display
- * @param {Date} date Date object
- * @returns {string} Formatted date string
  */
 function formatDate(date) {
   return date.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -263,8 +249,6 @@ function formatDate(date) {
 
 /**
  * Format time for display
- * @param {Date|string} date Date object or string
- * @returns {string} Formatted time string
  */
 function formatTime(date) {
   return new Date(date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -272,8 +256,6 @@ function formatTime(date) {
 
 /**
  * Capitalize first letter of a string
- * @param {string} string String to capitalize
- * @returns {string} Capitalized string
  */
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);

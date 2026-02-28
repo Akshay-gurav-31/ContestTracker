@@ -42,6 +42,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link href="styles/neon-toggle.css" rel="stylesheet" />
   <link href="styles/style.css" rel="stylesheet" />
+  <link href="styles/calendar.css" rel="stylesheet" />
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -625,83 +626,23 @@
             <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Weekly Schedule</h2>
           </div>
           <div class="space-y-4" id="weekly-schedule">
-            <!-- MON -->
+            <!-- Skeleton Initial Load -->
             <div class="flex gap-4">
               <div class="flex flex-col items-center">
-                <div
-                  class="flex h-10 w-10 items-center justify-center rounded-full border-4 border-white dark:border-slate-900 bg-primary text-white shadow-lg ring-1 ring-primary/20">
-                  <span class="text-xs font-bold">MON</span>
-                </div>
+                <div class="h-10 w-10 rounded-full skeleton-glass bg-slate-100 dark:bg-slate-800"></div>
                 <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
               </div>
               <div class="flex-1 pb-8">
-                <div
-                  class="flex items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 p-6">
-                  <p class="text-sm font-medium text-slate-400">No scheduled contests</p>
-                </div>
+                <div class="h-24 rounded-2xl skeleton-glass bg-slate-100 dark:bg-slate-800"></div>
               </div>
             </div>
-            <!-- WED -->
             <div class="flex gap-4">
               <div class="flex flex-col items-center">
-                <div
-                  class="flex h-10 w-10 items-center justify-center rounded-full border-4 border-white dark:border-slate-900 bg-indigo-500 text-white shadow-lg ring-1 ring-indigo-500/20">
-                  <span class="text-xs font-bold">WED</span>
-                </div>
+                <div class="h-10 w-10 rounded-full skeleton-glass bg-slate-100 dark:bg-slate-800"></div>
                 <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
               </div>
               <div class="flex-1 pb-8">
-                <div
-                  class="rounded-2xl bg-white dark:bg-slate-900 p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow">
-                  <div class="flex justify-between">
-                    <p class="text-xs font-bold text-slate-400 uppercase">08:00 PM - 10:00 PM</p>
-                    <span class="material-symbols-outlined text-indigo-500 !text-lg">verified</span>
-                  </div>
-                  <h4 class="mt-1 font-bold text-slate-800 dark:text-slate-200">CodeChef Contest</h4>
-                  <p class="mt-1 text-sm text-slate-500">Regular weekly challenge.</p>
-                </div>
-              </div>
-            </div>
-            <!-- SAT -->
-            <div class="flex gap-4">
-              <div class="flex flex-col items-center">
-                <div
-                  class="flex h-10 w-10 items-center justify-center rounded-full border-4 border-white dark:border-slate-900 bg-orange-500 text-white shadow-lg ring-1 ring-orange-500/20">
-                  <span class="text-xs font-bold">SAT</span>
-                </div>
-                <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
-              </div>
-              <div class="flex-1 pb-8">
-                <div
-                  class="rounded-2xl bg-white dark:bg-slate-900 p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow">
-                  <div class="flex justify-between">
-                    <p class="text-xs font-bold text-slate-400 uppercase">08:00 PM - 09:30 PM</p>
-                    <span class="material-symbols-outlined text-orange-500 !text-lg">bookmark</span>
-                  </div>
-                  <h4 class="mt-1 font-bold text-slate-800 dark:text-slate-200">LeetCode Biweekly</h4>
-                  <p class="mt-1 text-sm text-slate-500">Alternate Saturdays.</p>
-                </div>
-              </div>
-            </div>
-            <!-- SUN -->
-            <div class="flex gap-4">
-              <div class="flex flex-col items-center">
-                <div
-                  class="flex h-10 w-10 items-center justify-center rounded-full border-4 border-white dark:border-slate-900 bg-green-500 text-white shadow-lg ring-1 ring-green-500/20">
-                  <span class="text-xs font-bold">SUN</span>
-                </div>
-                <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
-              </div>
-              <div class="flex-1 pb-8">
-                <div
-                  class="rounded-2xl bg-white dark:bg-slate-900 p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow">
-                  <div class="flex justify-between">
-                    <p class="text-xs font-bold text-slate-400 uppercase">08:00 AM & 07:00 PM</p>
-                    <span class="material-symbols-outlined text-green-500 !text-lg">star</span>
-                  </div>
-                  <h4 class="mt-1 font-bold text-slate-800 dark:text-slate-200">Double Header</h4>
-                  <p class="mt-1 text-sm text-slate-500">LeetCode Weekly & GFG Weekly.</p>
-                </div>
+                <div class="h-24 rounded-2xl skeleton-glass bg-slate-100 dark:bg-slate-800"></div>
               </div>
             </div>
           </div>

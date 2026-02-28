@@ -155,56 +155,85 @@ function renderPlatformContests(platform, contests) {
  * Update the "Weekly Schedule" sidebar with real-time upcoming events
  * @param {Array} contests Array of contest objects
  */
-function renderWeeklySchedule(contests) {
-  const scheduleSection = document.getElementById('weekly-schedule') || document.getElementById('schedule-section');
-  if (!scheduleSection) return;
+export function renderWeeklySchedule(contests) {
+  const listContainer = document.getElementById('weekly-schedule') || document.getElementById('schedule-section');
+  if (!listContainer) return;
 
   const now = new Date();
-  const upcoming = contests.filter(c => new Date(c.startTime) > now).slice(0, 3);
-  const listContainer = scheduleSection;
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  if (upcoming.length === 0) {
-    listContainer.innerHTML = '<div class="text-sm text-slate-500 p-4">No scheduled contests this week.</div>';
-    return;
+  // Generate array for the next 7 days
+  const next7Days = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(todayStart);
+    date.setDate(todayStart.getDate() + i);
+
+    // Find contests for this specific day
+    const dayContests = contests.filter(c => {
+      const cDate = new Date(c.startTime);
+      return cDate.getDate() === date.getDate() &&
+        cDate.getMonth() === date.getMonth() &&
+        cDate.getFullYear() === date.getFullYear() &&
+        cDate >= now; // Only upcoming part of today
+    }).sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+    next7Days.push({
+      date,
+      contests: dayContests
+    });
   }
 
-  listContainer.innerHTML = upcoming.map(contest => {
-    const startTime = new Date(contest.startTime);
-    const dayName = startTime.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
-    const timeStr = formatTime(startTime);
-    const platform = getPlatformName(contest.platform);
+  listContainer.innerHTML = next7Days
+    .filter(day => day.contests.length > 0)
+    .map(day => {
+      let dayName = day.date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+      const dateNum = String(day.date.getDate()).padStart(2, '0');
 
-    // Pick a color based on platform
-    let bgColor = 'bg-indigo-500';
-    let iconColor = 'text-indigo-500';
-    let icon = 'verified';
+      // Relative naming for Today and Tomorrow
+      const diffDays = Math.round((day.date - todayStart) / (1000 * 60 * 60 * 24));
+      if (diffDays === 0) dayName = "TODAY";
+      if (diffDays === 1) dayName = "TMRW";
 
-    if (contest.platform === 'leetcode') { bgColor = 'bg-orange-500'; iconColor = 'text-orange-500'; icon = 'bookmark'; }
-    if (contest.platform === 'codechef') { bgColor = 'bg-yellow-600'; iconColor = 'text-yellow-600'; icon = 'verified'; }
-    if (contest.platform === 'gfg') { bgColor = 'bg-green-500'; iconColor = 'text-green-500'; icon = 'star'; }
-    if (contest.platform === 'codeforces') { bgColor = 'bg-blue-500'; iconColor = 'text-blue-500'; icon = 'code'; }
+      // Render group of contests for the day
+      return day.contests.map((contest, idx) => {
+        const startTime = new Date(contest.startTime);
+        const timeStr = formatTime(startTime);
+        const isFirst = idx === 0;
+        const isLast = idx === day.contests.length - 1;
 
-    return `
-      <div class="flex gap-4 fade-in">
-        <div class="flex flex-col items-center">
-          <div class="flex h-10 w-10 items-center justify-center rounded-full border-4 border-white dark:border-slate-900 ${bgColor} text-white shadow-lg ring-1 ring-white/20">
-            <span class="text-[10px] font-bold">${dayName}</span>
+        const platformColor = getPlatformColorClass(contest.platform);
+        const platformName = getPlatformName(contest.platform);
+
+        return `
+        <div class="flex gap-4 fade-in">
+          <div class="flex flex-col items-center">
+            ${isFirst ? `
+              <div class="flex h-10 w-10 flex-col items-center justify-center rounded-full border-4 border-white dark:border-slate-900 bg-primary text-white shadow-md ring-1 ring-primary/20">
+                <span class="text-[9px] font-black leading-none">${dayName}</span>
+                <span class="text-[11px] font-bold mt-0.5">${dateNum}</span>
+              </div>
+            ` : `
+              <div class="h-10 w-10 flex items-center justify-center">
+                <div class="h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+              </div>
+            `}
+            <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
           </div>
-          <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
-        </div>
-        <div class="flex-1 pb-8">
-          <div class="rounded-2xl bg-white dark:bg-slate-900 p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow">
-            <div class="flex justify-between">
-              <p class="text-xs font-bold text-slate-400 uppercase">${timeStr}</p>
-              <span class="material-symbols-outlined ${iconColor} !text-lg">${icon}</span>
+          <div class="flex-1 ${isLast ? 'pb-8' : 'pb-4'}">
+            <div class="rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-all active:scale-[0.99] cursor-pointer" 
+                 onclick="window.open('${contest.url}', '_blank')">
+              <div class="flex justify-between items-start mb-2">
+                <p class="text-[10px] font-bold text-slate-400 tracking-wider">${timeStr}</p>
+                <div class="h-2 w-2 rounded-full ${platformColor.replace('text-', 'bg-')}"></div>
+              </div>
+              <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 line-clamp-1">${contest.name}</h4>
+              <p class="text-[11px] font-semibold ${platformColor} mt-0.5">${platformName}</p>
             </div>
-            <h4 class="mt-1 font-bold text-slate-800 dark:text-slate-200">${contest.name}</h4>
-            <p class="mt-1 text-sm text-slate-500">${platform} Contest</p>
           </div>
         </div>
-      </div>
-    `;
-  }).join('');
+      `;
+      }).join('');
+    }).join('');
 }
 
 /**
