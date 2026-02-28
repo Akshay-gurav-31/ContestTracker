@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | Redirecting...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #020617;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .loader {
+            text-align: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <script>
+        // Immediate redirection logic for invalid paths
+        (function () {
+            // Log for debugging if needed, though most users won't see this
+            console.log("Invalid URL detected. Redirecting to dashboard...");
+
+            // Redirect to the main dashboard
+            window.location.href = "index.html";
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="loader">
+        <div class="spinner"></div>
+        <p>Redirecting to Dashboard...</p>
+    </div>
+</body>
+
+</html>
