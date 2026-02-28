@@ -1,5 +1,3 @@
-// Contest data generator for platforms with fixed schedules
-
 /**
  * Generate contest data for platforms with fixed schedules (LeetCode, CodeChef, GFG)
  * @returns {Array} Array of contest objects
@@ -177,4 +175,4 @@ function getMonthName(date) {
  */
 function formatDateSimple(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
+}       

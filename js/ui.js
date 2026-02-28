@@ -1,4 +1,10 @@
-// --- HELPER FUNCTIONS ---
+// UI updates and rendering functions
+
+/**
+ * Get the color class for a specific platform's badge
+ * @param {string} platform Platform identifier
+ * @returns {string} Tailwind CSS color classes
+ */
 export function getPlatformColorClass(platform) {
   switch (String(platform).toLowerCase()) {
     case 'leetcode': return 'text-orange-500 bg-orange-100 dark:bg-orange-500/10';
@@ -41,50 +47,200 @@ export function getCountdown(date) {
 
 /**
  * Render all contests in the UI
- * @param {Array} contests Array of all contests
+ * @param {Array} contests Array of contest objects
  */
 export function renderContests(contests) {
   const loadingElements = document.querySelectorAll('.loading');
   loadingElements.forEach(el => el.classList.add('hidden'));
 
-  // Render hero section (next upcoming contest)
+  const now = new Date();
+  // Filter for upcoming contests only
+  const upcomingContests = contests.filter(contest => new Date(contest.startTime) > now);
+
+  // Sort contests by start time safely
+  upcomingContests.sort((a, b) => {
+    const timeA = a.startTime instanceof Date ? a.startTime.getTime() : new Date(a.startTime).getTime();
+    const timeB = b.startTime instanceof Date ? b.startTime.getTime() : new Date(b.startTime).getTime();
+    return timeA - timeB;
+  });
+
+  // 1. Render Hero Section (Next Contest)
   const heroContestEl = document.getElementById('next-contest');
-  if (contests.length > 0) {
-    const nextContest = contests[0];
-    heroContestEl.innerHTML = createHeroContestHtml(nextContest);
-    heroContestEl.className = 'relative overflow-hidden rounded-2xl bg-slate-900 p-8 md:p-12 text-white shadow-2xl fade-in';
+  if (heroContestEl) {
+    if (upcomingContests.length > 0) {
+      const nextContest = upcomingContests[0];
+      heroContestEl.innerHTML = createHeroContestHtml(nextContest);
+      heroContestEl.className = 'relative overflow-hidden rounded-2xl bg-slate-900 p-8 md:p-12 text-white shadow-2xl fade-in';
+    } else {
+      heroContestEl.innerHTML = '<div class="p-12 text-center text-slate-400">No upcoming contests found.</div>';
+    }
   }
 
-  // Filter out the hero contest and render the rest in upcoming
-  const upcomingContests = contests.filter(c => c.id !== (contests[0]?.id));
+  // 2. Render Upcoming Contests Carousel
   const upcomingContestsEl = document.getElementById('upcoming-contests');
+  if (upcomingContestsEl) {
+    upcomingContestsEl.innerHTML = '';
 
-  // Clear any loading states
-  upcomingContestsEl.innerHTML = '';
+    // Filter out the hero contest if shown above
+    const restContests = upcomingContests.slice(1);
 
-  if (upcomingContests.length <= 1) {
-    upcomingContestsEl.innerHTML = '<div class="flex items-center justify-center w-full py-8 text-slate-400">No additional upcoming contests found</div>';
-  } else {
-    // Generate cards for the next 10 contests
-    const cardsHtml = upcomingContests.slice(1, 11).map((contest, index) => {
-      const card = createContestCard(contest, index);
-      return card.outerHTML;
-    }).join('');
+    if (restContests.length === 0) {
+      upcomingContestsEl.innerHTML = '<div class="flex items-center justify-center w-full py-8 text-slate-400">No additional upcoming contests found</div>';
+    } else {
+      // Generate cards for the next 10 contests
+      const cardsHtml = restContests.slice(0, 10).map((contest, index) => {
+        const card = createContestCard(contest, index);
+        return card.outerHTML;
+      }).join('');
 
-    // To make an infinite seamless scroll, we wrap the cards in a container that animates,
-    // and we duplicate the content so the end seamlessly meets the beginning.
-    upcomingContestsEl.innerHTML = `
-      <div class="animate-scroll gap-6">
-        ${cardsHtml}
-        ${cardsHtml}
+      upcomingContestsEl.innerHTML = `
+        <div class="animate-scroll gap-6">
+          ${cardsHtml}
+          ${cardsHtml}
+        </div>
+      `;
+    }
+  }
+
+  // 3. Update the Weekly Schedule section with real dynamic data
+  renderWeeklySchedule(contests);
+
+  // 4. Update platform counts in the Platform Selector
+  renderPlatformCounts(contests);
+
+  // 5. Render platform-specific contests (Mirrored logic from reference)
+  renderPlatformContests('leetcode', contests);
+  renderPlatformContests('codechef', contests);
+  renderPlatformContests('gfg', contests);
+  renderPlatformContests('codeforces', contests);
+}
+
+/**
+ * Render contests for a specific platform
+ * @param {string} platform Platform identifier
+ * @param {Array} contests Array of contest objects
+ */
+function renderPlatformContests(platform, contests) {
+  const now = new Date();
+
+  // Filter contests for this platform and upcoming
+  const platformContests = contests.filter(
+    contest => contest.platform === platform && new Date(contest.startTime) > now
+  );
+
+  const containerEl = document.getElementById(`${platform}-contests`);
+  if (!containerEl) return;
+
+  containerEl.innerHTML = '';
+
+  if (platformContests.length === 0) {
+    containerEl.innerHTML = '<div class="no-contests">No upcoming contests</div>';
+    return;
+  }
+
+  // Show next 3 contests for this platform (Reference pattern)
+  platformContests.slice(0, 3).forEach(contest => {
+    const contestEl = document.createElement('div');
+    contestEl.className = 'platform-contest-item';
+    contestEl.innerHTML = `
+      <div class="platform-contest-date">${formatDate(new Date(contest.startTime))}</div>
+      <div class="platform-contest-name">${contest.name}</div>
+      <div class="platform-contest-time">${formatTime(new Date(contest.startTime))}</div>
+    `;
+    containerEl.appendChild(contestEl);
+  });
+}
+
+/**
+ * Update the "Weekly Schedule" sidebar with real-time upcoming events
+ * @param {Array} contests Array of contest objects
+ */
+function renderWeeklySchedule(contests) {
+  const scheduleSection = document.getElementById('weekly-schedule') || document.getElementById('schedule-section');
+  if (!scheduleSection) return;
+
+  const now = new Date();
+  const upcoming = contests.filter(c => new Date(c.startTime) > now).slice(0, 3);
+  const listContainer = scheduleSection;
+
+  if (upcoming.length === 0) {
+    listContainer.innerHTML = '<div class="text-sm text-slate-500 p-4">No scheduled contests this week.</div>';
+    return;
+  }
+
+  listContainer.innerHTML = upcoming.map(contest => {
+    const startTime = new Date(contest.startTime);
+    const dayName = startTime.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+    const timeStr = formatTime(startTime);
+    const platform = getPlatformName(contest.platform);
+
+    // Pick a color based on platform
+    let bgColor = 'bg-indigo-500';
+    let iconColor = 'text-indigo-500';
+    let icon = 'verified';
+
+    if (contest.platform === 'leetcode') { bgColor = 'bg-orange-500'; iconColor = 'text-orange-500'; icon = 'bookmark'; }
+    if (contest.platform === 'codechef') { bgColor = 'bg-yellow-600'; iconColor = 'text-yellow-600'; icon = 'verified'; }
+    if (contest.platform === 'gfg') { bgColor = 'bg-green-500'; iconColor = 'text-green-500'; icon = 'star'; }
+    if (contest.platform === 'codeforces') { bgColor = 'bg-blue-500'; iconColor = 'text-blue-500'; icon = 'code'; }
+
+    return `
+      <div class="flex gap-4 fade-in">
+        <div class="flex flex-col items-center">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full border-4 border-white dark:border-slate-900 ${bgColor} text-white shadow-lg ring-1 ring-white/20">
+            <span class="text-[10px] font-bold">${dayName}</span>
+          </div>
+          <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
+        </div>
+        <div class="flex-1 pb-8">
+          <div class="rounded-2xl bg-white dark:bg-slate-900 p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow">
+            <div class="flex justify-between">
+              <p class="text-xs font-bold text-slate-400 uppercase">${timeStr}</p>
+              <span class="material-symbols-outlined ${iconColor} !text-lg">${icon}</span>
+            </div>
+            <h4 class="mt-1 font-bold text-slate-800 dark:text-slate-200">${contest.name}</h4>
+            <p class="mt-1 text-sm text-slate-500">${platform} Contest</p>
+          </div>
+        </div>
       </div>
     `;
-  }
+  }).join('');
+}
 
+/**
+ * Update the contest counts on the Platform Grid cards
+ * @param {Array} contests Array of contest objects
+ */
+function renderPlatformCounts(contests) {
+  const platforms = ['leetcode', 'codeforces', 'codechef', 'gfg'];
+  const now = new Date();
+
+  platforms.forEach(platform => {
+    const countEl = document.getElementById(`count-${platform}`);
+    if (!countEl) return;
+
+    const platformContests = contests.filter(c =>
+      c.platform === platform &&
+      new Date(c.startTime) > now
+    );
+
+    const count = platformContests.length;
+
+    countEl.textContent = count > 0 ? `${count} Upcoming` : 'No Contests';
+    if (count > 0) {
+      countEl.classList.remove('text-slate-400');
+      countEl.classList.add('text-primary');
+    } else {
+      countEl.classList.add('text-slate-400');
+      countEl.classList.remove('text-primary');
+    }
+  });
 }
 
 /**
  * Create Hero Section HTML for the next contest
+ * @param {Object} contest Contest object
+ * @returns {string} HTML for hero section
  */
 function createHeroContestHtml(contest) {
   const startTime = new Date(contest.startTime);
@@ -231,7 +387,7 @@ function getHeroCountdownHtml(startTime) {
 }
 
 /**
- * Update all countdown timers on the page
+ * Update all countdown timers on the page periodically
  */
 export function updateCountdowns() {
   // Update Hero Countdown
@@ -241,7 +397,7 @@ export function updateCountdowns() {
     heroCountdown.innerHTML = getHeroCountdownHtml(new Date(startTime));
   }
 
-  // Update Simple Countdowns
+  // Update Simple Countdowns on cards
   const simpleCountdowns = document.querySelectorAll('.contest-countdown-simple');
   simpleCountdowns.forEach(el => {
     const startTime = parseInt(el.getAttribute('data-start-time'), 10);

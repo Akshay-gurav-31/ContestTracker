@@ -187,7 +187,7 @@
       background-color: #e2e8f0;
       border: 1px solid #e2e8f0;
       border-radius: 0.5rem;
-      overflow: hidden;
+      /* Removed overflow: hidden to allow tooltips to show outside */
     }
 
     .dark .calendar-grid {
@@ -516,62 +516,80 @@
 
       <!-- Platform Selector -->
       <section class="grid grid-cols-2 md:grid-cols-4 gap-4" id="platforms-section">
-        <div
+        <div id="platform-leetcode"
           class="group hover-shine flex cursor-pointer flex-col items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-lg">
           <div
             class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-500/10 text-orange-600 transition-transform group-hover:scale-110">
             <span class="material-symbols-outlined !text-3xl">code_off</span>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="relative flex h-2.5 w-2.5">
-              <span
-                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
-              <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-orange-500"></span>
-            </span>
-            <span class="font-bold text-slate-700 dark:text-slate-200">LeetCode</span>
+          <div class="flex flex-col items-center gap-1">
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2.5 w-2.5">
+                <span
+                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
+                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-orange-500"></span>
+              </span>
+              <span class="font-bold text-slate-700 dark:text-slate-200">LeetCode</span>
+            </div>
+            <span id="count-leetcode"
+              class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
           </div>
         </div>
-        <div
+        <div id="platform-codeforces"
           class="group hover-shine flex cursor-pointer flex-col items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-500/40 hover:shadow-lg">
           <div
             class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-500/10 text-blue-600 transition-transform group-hover:scale-110">
             <span class="material-symbols-outlined !text-3xl">data_object</span>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="relative flex h-2.5 w-2.5">
-              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
-              <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-500"></span>
-            </span>
-            <span class="font-bold text-slate-700 dark:text-slate-200">Codeforces</span>
+          <div class="flex flex-col items-center gap-1">
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2.5 w-2.5">
+                <span
+                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-500"></span>
+              </span>
+              <span class="font-bold text-slate-700 dark:text-slate-200">Codeforces</span>
+            </div>
+            <span id="count-codeforces"
+              class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
           </div>
         </div>
-        <div
+        <div id="platform-codechef"
           class="group hover-shine flex cursor-pointer flex-col items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-yellow-600/40 hover:shadow-lg">
           <div
             class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-100 dark:bg-yellow-500/10 text-yellow-700 transition-transform group-hover:scale-110">
             <span class="material-symbols-outlined !text-3xl">restaurant_menu</span>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="relative flex h-2.5 w-2.5">
-              <span
-                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75"></span>
-              <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
-            </span>
-            <span class="font-bold text-slate-700 dark:text-slate-200">CodeChef</span>
+          <div class="flex flex-col items-center gap-1">
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2.5 w-2.5">
+                <span
+                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75"></span>
+                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
+              </span>
+              <span class="font-bold text-slate-700 dark:text-slate-200">CodeChef</span>
+            </div>
+            <span id="count-codechef"
+              class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
           </div>
         </div>
-        <div
+        <div id="platform-gfg"
           class="group hover-shine flex cursor-pointer flex-col items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-green-500/40 hover:shadow-lg">
           <div
             class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-500/10 text-green-600 transition-transform group-hover:scale-110">
             <span class="material-symbols-outlined !text-3xl">school</span>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="relative flex h-2.5 w-2.5">
-              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-              <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
-            </span>
-            <span class="font-bold text-slate-700 dark:text-slate-200">GFG</span>
+          <div class="flex flex-col items-center gap-1">
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2.5 w-2.5">
+                <span
+                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
+              </span>
+              <span class="font-bold text-slate-700 dark:text-slate-200">GFG</span>
+            </div>
+            <span id="count-gfg"
+              class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
           </div>
         </div>
       </section>
