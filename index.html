@@ -443,6 +443,9 @@
             <a id="nav-dashboard"
               class="text-sm font-semibold text-primary hover:text-indigo-600 transition-colors whitespace-nowrap"
               href="index.html">Dashboard</a>
+            <a id="nav-platforms"
+              class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-primary transition-colors whitespace-nowrap"
+              href="#platforms-section">Platforms</a>
             <a id="nav-calendar"
               class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-primary transition-colors whitespace-nowrap"
               href="#calendar-section">Calendar</a>
@@ -490,7 +493,8 @@
       </div>
     </header>
 
-    <main style="position: relative; overflow: hidden;" class="mx-auto w-full max-w-7xl px-6 pt-16 pb-8 space-y-12">
+    <!-- Main Content Area -->
+    <main class="mx-auto flex w-full max-w-7xl flex-1 flex-grow flex-col gap-12 px-4 sm:px-6 py-8 sm:py-12">
       <div
         style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; height: 300px; background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.05) 40%, transparent 75%); pointer-events: none; z-index: 0;">
       </div>
@@ -515,82 +519,88 @@
         </div>
       </section>
 
-      <!-- Platform Selector -->
-      <section class="grid grid-cols-2 md:grid-cols-4 gap-4" id="platforms-section">
-        <div id="platform-leetcode"
-          class="group hover-shine flex cursor-pointer flex-col items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-lg">
-          <div
-            class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-500/10 text-orange-600 transition-transform group-hover:scale-110">
-            <span class="material-symbols-outlined !text-3xl">code_off</span>
-          </div>
-          <div class="flex flex-col items-center gap-1">
-            <div class="flex items-center gap-2">
-              <span class="relative flex h-2.5 w-2.5">
-                <span
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
-                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-orange-500"></span>
-              </span>
-              <span class="font-bold text-slate-700 dark:text-slate-200">LeetCode</span>
-            </div>
-            <span id="count-leetcode"
-              class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
-          </div>
+      </section>
+
+      <!-- Platforms Standalone Section (Relocated and Full-Width) -->
+      <section class="space-y-6" id="platforms-section">
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Platform Overview</h2>
         </div>
-        <div id="platform-codeforces"
-          class="group hover-shine flex cursor-pointer flex-col items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-500/40 hover:shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- LeetCode -->
           <div
-            class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-500/10 text-blue-600 transition-transform group-hover:scale-110">
-            <span class="material-symbols-outlined !text-3xl">data_object</span>
-          </div>
-          <div class="flex flex-col items-center gap-1">
-            <div class="flex items-center gap-2">
-              <span class="relative flex h-2.5 w-2.5">
-                <span
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
-                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-500"></span>
-              </span>
-              <span class="font-bold text-slate-700 dark:text-slate-200">Codeforces</span>
+            class="group hover-shine flex cursor-pointer flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+              <div
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-500/10 text-orange-600 transition-transform group-hover:scale-110">
+                <span class="material-symbols-outlined">code_off</span>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="font-bold text-slate-800 dark:text-slate-200">LeetCode</span>
+                <span id="count-leetcode"
+                  class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
+              </div>
             </div>
-            <span id="count-codeforces"
-              class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
+            <div id="leetcode-contests" class="space-y-2 mt-2">
+              <div class="h-10 rounded-xl skeleton-glass bg-slate-50 dark:bg-slate-800/50"></div>
+            </div>
           </div>
-        </div>
-        <div id="platform-codechef"
-          class="group hover-shine flex cursor-pointer flex-col items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-yellow-600/40 hover:shadow-lg">
+
+          <!-- Codeforces -->
           <div
-            class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-100 dark:bg-yellow-500/10 text-yellow-700 transition-transform group-hover:scale-110">
-            <span class="material-symbols-outlined !text-3xl">restaurant_menu</span>
-          </div>
-          <div class="flex flex-col items-center gap-1">
-            <div class="flex items-center gap-2">
-              <span class="relative flex h-2.5 w-2.5">
-                <span
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75"></span>
-                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
-              </span>
-              <span class="font-bold text-slate-700 dark:text-slate-200">CodeChef</span>
+            class="group hover-shine flex cursor-pointer flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-500/40 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+              <div
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-500/10 text-blue-600 transition-transform group-hover:scale-110">
+                <span class="material-symbols-outlined">data_object</span>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="font-bold text-slate-800 dark:text-slate-200">Codeforces</span>
+                <span id="count-codeforces"
+                  class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
+              </div>
             </div>
-            <span id="count-codechef"
-              class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
+            <div id="codeforces-contests" class="space-y-2 mt-2">
+              <div class="h-10 rounded-xl skeleton-glass bg-slate-50 dark:bg-slate-800/50"></div>
+            </div>
           </div>
-        </div>
-        <div id="platform-gfg"
-          class="group hover-shine flex cursor-pointer flex-col items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-green-500/40 hover:shadow-lg">
+
+          <!-- CodeChef -->
           <div
-            class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-500/10 text-green-600 transition-transform group-hover:scale-110">
-            <span class="material-symbols-outlined !text-3xl">school</span>
-          </div>
-          <div class="flex flex-col items-center gap-1">
-            <div class="flex items-center gap-2">
-              <span class="relative flex h-2.5 w-2.5">
-                <span
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
-              </span>
-              <span class="font-bold text-slate-700 dark:text-slate-200">GFG</span>
+            class="group hover-shine flex cursor-pointer flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-yellow-600/40 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+              <div
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-yellow-100 dark:bg-yellow-500/10 text-yellow-700 transition-transform group-hover:scale-110">
+                <span class="material-symbols-outlined">restaurant_menu</span>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="font-bold text-slate-800 dark:text-slate-200">CodeChef</span>
+                <span id="count-codechef"
+                  class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
+              </div>
             </div>
-            <span id="count-gfg"
-              class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
+            <div id="codechef-contests" class="space-y-2 mt-2">
+              <div class="h-10 rounded-xl skeleton-glass bg-slate-50 dark:bg-slate-800/50"></div>
+            </div>
+          </div>
+
+          <!-- GFG -->
+          <div
+            class="group hover-shine flex cursor-pointer flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-green-500/40 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+              <div
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 dark:bg-green-500/10 text-green-600 transition-transform group-hover:scale-110">
+                <span class="material-symbols-outlined">school</span>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="font-bold text-slate-800 dark:text-slate-200">GFG</span>
+                <span id="count-gfg"
+                  class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Upcoming...</span>
+              </div>
+            </div>
+            <div id="gfg-contests" class="space-y-2 mt-2">
+              <div class="h-10 rounded-xl skeleton-glass bg-slate-50 dark:bg-slate-800/50"></div>
+            </div>
           </div>
         </div>
       </section>
@@ -626,23 +636,32 @@
             <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Weekly Schedule</h2>
           </div>
           <div class="space-y-4" id="weekly-schedule">
-            <!-- Skeleton Initial Load -->
-            <div class="flex gap-4">
+            <!-- Skeleton Initial Load (Multiple items for better UX) -->
+            <div class="flex gap-4 animate-pulse">
               <div class="flex flex-col items-center">
-                <div class="h-10 w-10 rounded-full skeleton-glass bg-slate-100 dark:bg-slate-800"></div>
+                <div class="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-800"></div>
                 <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
               </div>
               <div class="flex-1 pb-8">
-                <div class="h-24 rounded-2xl skeleton-glass bg-slate-100 dark:bg-slate-800"></div>
+                <div class="h-24 rounded-2xl bg-slate-100 dark:bg-slate-800"></div>
               </div>
             </div>
-            <div class="flex gap-4">
+            <div class="flex gap-4 animate-pulse">
               <div class="flex flex-col items-center">
-                <div class="h-10 w-10 rounded-full skeleton-glass bg-slate-100 dark:bg-slate-800"></div>
+                <div class="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-800"></div>
                 <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
               </div>
               <div class="flex-1 pb-8">
-                <div class="h-24 rounded-2xl skeleton-glass bg-slate-100 dark:bg-slate-800"></div>
+                <div class="h-24 rounded-2xl bg-slate-100 dark:bg-slate-800"></div>
+              </div>
+            </div>
+            <div class="flex gap-4 animate-pulse">
+              <div class="flex flex-col items-center">
+                <div class="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-800"></div>
+                <div class="w-px grow bg-slate-200 dark:bg-slate-800"></div>
+              </div>
+              <div class="flex-1 pb-8">
+                <div class="h-24 rounded-2xl bg-slate-100 dark:bg-slate-800"></div>
               </div>
             </div>
           </div>
@@ -656,8 +675,8 @@
                 class="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">
                 <span class="material-symbols-outlined">chevron_left</span>
               </button>
-              <span id="current-month" class="px-3 text-sm font-bold text-slate-700 dark:text-slate-200">October
-                2023</span>
+              <span id="current-month"
+                class="px-3 text-sm font-bold text-slate-700 dark:text-slate-200">Loading...</span>
               <button id="next-month"
                 class="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
                 <span class="material-symbols-outlined">chevron_right</span>
@@ -775,38 +794,29 @@
         </section>
       </div>
 
-      <section id="platforms-detail" class="platforms-section hidden">
-        <!-- Hidden to keep IDs unique but allow JS to find them if needed -->
-        <div id="leetcode-contests"></div>
-        <div id="codechef-contests"></div>
-        <div id="gfg-contests"></div>
-        <div id="codeforces-contests"></div>
+      <!-- About Section -->
+      <section id="about-section"
+        class="py-20 bg-slate-50 dark:bg-background-dark/50 border-t border-slate-200 dark:border-slate-800">
+        <div class="mx-auto max-w-4xl px-6 text-center">
+          <div class="space-y-8">
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+              About CodeTrack
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+              Empowering Your <br /><span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-500">Developer
+                Journey</span>
+            </h2>
+            <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
+              From local hackathons to global coding competitions, CodeTrack ensures you have all the information you
+              need in one sleek, efficient interface. Our platform aggregates data from all major competitive
+              programming sites, providing a unified dashboard for the modern developer.
+            </p>
+          </div>
+        </div>
       </section>
     </main>
-
-    <!-- About Section -->
-    <section id="about-section"
-      class="py-20 bg-slate-50 dark:bg-background-dark/50 border-t border-slate-200 dark:border-slate-800">
-      <div class="mx-auto max-w-4xl px-6 text-center">
-        <div class="space-y-8">
-          <div
-            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-            About CodeTrack
-          </div>
-          <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-            Empowering Your <br /><span
-              class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-500">Developer
-              Journey</span>
-          </h2>
-          <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
-            From local hackathons to global coding competitions, CodeTrack ensures you have all the information you
-            need in one sleek, efficient interface. Our platform aggregates data from all major competitive
-            programming sites, providing a unified dashboard for the modern developer.
-          </p>
-
-        </div>
-      </div>
-    </section>
 
     <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6">
       <div class="mx-auto max-w-7xl px-6 text-center">
@@ -846,6 +856,10 @@
         <span class="material-symbols-outlined">dashboard</span>
         <span>Home</span>
       </a>
+      <a href="#platforms-section" class="mobile-nav-item">
+        <span class="material-symbols-outlined">code</span>
+        <span>Platforms</span>
+      </a>
       <a href="hackathons.html" class="mobile-nav-item">
         <span class="material-symbols-outlined">rocket_launch</span>
         <span>Events</span>
@@ -856,6 +870,11 @@
       </a>
     </nav>
   </div>
+  <!-- Global Calendar Popover -->
+  <div id="calendar-global-popover"
+    class="calendar-popover-global border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl rounded-2xl p-4 hidden fixed z-[9999] pointer-events-none">
+  </div>
+
   <script type="module" src="./js/main.js"></script>
 </body>
 

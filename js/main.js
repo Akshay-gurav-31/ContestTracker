@@ -1,5 +1,5 @@
-import { fetchCodeforcesContests } from './api.js';
-import { generateContestData } from './contestData.js';
+import { fetchCodeforcesContests, fetchLeetCodeContests } from './api.js';
+import { generateContestData, generateLeetCodeFallback } from './contestData.js';
 import { initCalendar } from './calendar.js';
 import { renderContests, updateCountdowns, toggleTheme, initScrollSpy } from './ui.js';
 
@@ -63,8 +63,17 @@ async function initApp() {
     const codeforcesContests = await fetchCodeforcesContests();
     console.log(`Fetched ${codeforcesContests.length} Codeforces contests.`);
 
-    // Combine both sets of data
-    const allContests = [...contestData, ...codeforcesContests];
+    console.log('Fetching LeetCode data...');
+    let leetcodeContests = await fetchLeetCodeContests();
+
+    if (leetcodeContests.length === 0) {
+      console.warn('LeetCode API fetch returned no data, using fallback generators...');
+      leetcodeContests = generateLeetCodeFallback();
+    }
+    console.log(`Fetched/Generated ${leetcodeContests.length} LeetCode contests.`);
+
+    // Combine all sets of data
+    const allContests = [...contestData, ...codeforcesContests, ...leetcodeContests];
 
     // Sort contests by start date
     allContests.sort((a, b) => {

@@ -45,11 +45,17 @@ export function getCountdown(date) {
 }
 // -------------------------
 
+// Cache for auto-refreshing UI when contests start
+let cachedAllContests = [];
+let isRefreshing = false;
+
 /**
  * Render all contests in the UI
  * @param {Array} contests Array of contest objects
  */
 export function renderContests(contests) {
+  // Store for auto-refresh logic
+  cachedAllContests = contests;
   const loadingElements = document.querySelectorAll('.loading');
   loadingElements.forEach(el => el.classList.add('hidden'));
 
@@ -134,18 +140,29 @@ function renderPlatformContests(platform, contests) {
   containerEl.innerHTML = '';
 
   if (platformContests.length === 0) {
-    containerEl.innerHTML = '<div class="no-contests">No upcoming contests</div>';
+    containerEl.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-4 text-center opacity-50">
+        <span class="material-symbols-outlined text-slate-400 !text-xl mb-1">sentiment_neutral</span>
+        <p class="text-[10px] font-bold text-slate-400 uppercase">No upcoming contests</p>
+      </div>
+    `;
     return;
   }
 
-  // Show next 3 contests for this platform (Reference pattern)
+  // Show next 3 contests for this platform
   platformContests.slice(0, 3).forEach(contest => {
     const contestEl = document.createElement('div');
-    contestEl.className = 'platform-contest-item';
+    contestEl.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group fade-in';
+    contestEl.onclick = () => window.open(contest.url, '_blank');
+
     contestEl.innerHTML = `
-      <div class="platform-contest-date">${formatDate(new Date(contest.startTime))}</div>
-      <div class="platform-contest-name">${contest.name}</div>
-      <div class="platform-contest-time">${formatTime(new Date(contest.startTime))}</div>
+      <div class="flex flex-col gap-0.5 max-w-[70%]">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">${formatDate(new Date(contest.startTime))}</span>
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-primary transition-colors" title="${contest.name}">${contest.name}</span>
+      </div>
+      <div class="text-[11px] font-black text-primary bg-primary/5 px-2 py-1 rounded-lg">
+        ${formatTime(new Date(contest.startTime))}
+      </div>
     `;
     containerEl.appendChild(contestEl);
   });
@@ -423,6 +440,19 @@ export function updateCountdowns() {
   const heroCountdown = document.querySelector('.hero-countdown');
   if (heroCountdown) {
     const startTime = parseInt(heroCountdown.getAttribute('data-start-time'), 10);
+    const now = Date.now();
+
+    // ✅ AUTO-NEXT LOGIC: If hero contest has started, refresh the dashboard to show the next one
+    if (startTime - now <= 0 && !isRefreshing && cachedAllContests.length > 0) {
+      isRefreshing = true;
+      // Small 2-second delay to let the user see "Started" before the swap
+      setTimeout(() => {
+        console.log('Hero contest started. Auto-swapping to next event...');
+        renderContests(cachedAllContests);
+        isRefreshing = false;
+      }, 2000);
+    }
+
     heroCountdown.innerHTML = getHeroCountdownHtml(new Date(startTime));
   }
 
@@ -475,7 +505,7 @@ export function toggleTheme() {
 export function initScrollSpy() {
   const sections = [
     { id: 'next-contest', navId: 'nav-dashboard' },
-    { id: 'next-event', navId: 'nav-hackathons' },
+    { id: 'platforms-section', navId: 'nav-platforms' },
     { id: 'calendar-section', navId: 'nav-calendar' },
     { id: 'about-section', navId: 'nav-about' }
   ];

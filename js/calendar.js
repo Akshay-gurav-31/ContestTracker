@@ -33,81 +33,78 @@ export function initCalendar(contests) {
     };
   }
 
-  // --- ✅ FIXED: Robust Dynamic Popup Positioning ---
+  // --- ✅ FIXED: Global Robust Popover Positioning ---
   const calendarEl = document.getElementById('calendar');
-  if (calendarEl) {
+  const globalPopover = document.getElementById('calendar-global-popover');
 
+  if (calendarEl && globalPopover) {
     calendarEl.onmouseover = (e) => {
       const dayCell = e.target.closest('.calendar-day');
       if (!dayCell) return;
 
-      const popover = dayCell.querySelector('.calendar-popover');
-      if (!popover) return;
+      const eventsData = dayCell.getAttribute('data-events');
+      if (!eventsData) return;
 
-      const eventDots = dayCell.querySelector('.date-events');
-      if (!eventDots || eventDots.children.length === 0) return;
+      const events = JSON.parse(eventsData);
+      if (events.length === 0) return;
 
-      // Step 1: Show invisibly to measure size
-      popover.style.visibility = 'hidden';
-      popover.style.display = 'block';
-      popover.style.position = 'fixed';
-      popover.style.left = '0px';
-      popover.style.top = '0px';
+      const dateStr = dayCell.getAttribute('data-date-str');
 
-      // Step 2: Measure
+      // Step 1: Populate Global Popover
+      globalPopover.innerHTML = `
+        <div class="calendar-popover-date">${dateStr}</div>
+        <div class="calendar-popover-events">
+          ${events.map(e => `
+            <div class="popover-event" style="--accent-color: ${getPlatformColor(e.platform)}">
+              <div class="popover-event-platform" style="color: ${getPlatformColor(e.platform)}">${e.platform.toUpperCase()}</div>
+              <div class="popover-event-name">${e.name}</div>
+              <div class="popover-event-time">${formatTime(e.startTime)} - ${formatTime(e.endTime)}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      // Step 2: Show to measure
+      globalPopover.style.display = 'block';
+      globalPopover.classList.add('visible');
+
       const triggerRect = dayCell.getBoundingClientRect();
-      const popoverWidth = popover.offsetWidth;
-      const popoverHeight = popover.offsetHeight;
+      const popoverWidth = globalPopover.offsetWidth;
+      const popoverHeight = globalPopover.offsetHeight;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      const margin = 10;
+      const margin = 16;
 
-      // ✅ Step 3: Smart Left — prefer RIGHT side of cell
-      let left = triggerRect.right + 8;
-
-      // Agar right mein fit nahi hota → left side mein dikhao
+      // ✅ Step 3: Smart Horizontal Position
+      let left = triggerRect.right + 12;
+      // If overflows right, try left
       if (left + popoverWidth > viewportWidth - margin) {
-        left = triggerRect.left - popoverWidth - 8;
+        left = triggerRect.left - popoverWidth - 12;
       }
-
-      // Hard clamp — kabhi off-screen nahi jayega
+      // Hard clamp
       left = Math.max(margin, Math.min(left, viewportWidth - popoverWidth - margin));
 
-      // ✅ Step 4: Smart Top — cell ke saath align karo
+      // ✅ Step 4: Smart Vertical Position
       let top = triggerRect.top;
-
-      // Agar neeche overflow ho → upar se align karo
+      // If overflows bottom, align to bottom of cell
       if (top + popoverHeight > viewportHeight - margin) {
         top = triggerRect.bottom - popoverHeight;
       }
-
       // Hard clamp
       top = Math.max(margin, Math.min(top, viewportHeight - popoverHeight - margin));
 
-      // Step 5: Apply aur show karo
-      popover.style.left = `${Math.round(left)}px`;
-      popover.style.top = `${Math.round(top)}px`;
-      popover.style.visibility = 'visible';
-      popover.classList.add('visible');
+      globalPopover.style.left = `${Math.round(left)}px`;
+      globalPopover.style.top = `${Math.round(top)}px`;
     };
 
     calendarEl.onmouseout = (e) => {
       const dayCell = e.target.closest('.calendar-day');
-      if (!dayCell) return;
-      if (dayCell.contains(e.relatedTarget)) return;
-
-      const popover = dayCell.querySelector('.calendar-popover');
-      if (popover) {
-        popover.classList.remove('visible');
-        popover.style.display = 'none';
-      }
+      if (!dayCell || dayCell.contains(e.relatedTarget)) return;
+      globalPopover.classList.remove('visible');
     };
 
     calendarEl.onmouseleave = () => {
-      document.querySelectorAll('.calendar-popover').forEach(p => {
-        p.classList.remove('visible');
-        p.style.display = 'none';
-      });
+      globalPopover.classList.remove('visible');
     };
   }
 }
@@ -187,29 +184,14 @@ function createCalendarDateHTML(day, date, events, otherMonth = false, isToday =
     }
   });
 
-  let popoverHTML = '';
-  if (events.length > 0) {
-    popoverHTML = `
-      <div class="calendar-popover">
-        <div class="calendar-popover-date">${formatDate(date)}</div>
-        <div class="calendar-popover-events">
-          ${events.map(e => `
-            <div class="popover-event" style="--accent-color: ${getPlatformColor(e.platform)}">
-              <div class="popover-event-platform" style="color: ${getPlatformColor(e.platform)}">${e.platform.toUpperCase()}</div>
-              <div class="popover-event-name">${e.name}</div>
-              <div class="popover-event-time">${formatTime(e.startTime)} - ${formatTime(e.endTime)}</div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }
+  // Store events as data attribute for the global popover
+  const eventsData = JSON.stringify(events).replace(/"/g, '&quot;');
+  const dateStr = formatDate(date);
 
   return `
-    <div class="${classNames.join(' ')}">
+    <div class="${classNames.join(' ')}" data-events="${eventsData}" data-date-str="${dateStr}">
       <div class="date-number">${day}</div>
       <div class="date-events text-center flex flex-wrap gap-1 justify-center">${eventDotsHTML}</div>
-      ${popoverHTML}
     </div>
   `;
 }

@@ -154,46 +154,45 @@
   transform: scale(1.2);
 }
 
-/* ✅ FIXED Popover Styling */
-.calendar-popover {
+/* ✅ NEW: Global Calendar Popover (Fixed positioning, Premium Card) */
+#calendar-global-popover {
   position: fixed;
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 0 1px 1px rgba(0, 0, 0, 0.05);
-  padding: 1rem;
-  min-width: 220px;
-  max-width: 280px;
-  width: max-content;
-  z-index: 2147483647 !important;
-  display: none;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 10000;
+  min-width: 260px;
+  max-width: 320px;
+  background: white;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05);
   pointer-events: none;
-  opacity: 1 !important;
-  box-sizing: border-box !important;
-  overflow: visible !important;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.calendar-popover.visible {
+#calendar-global-popover.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
   display: block;
-  /* ✅ Bas display toggle hoga, opacity nahi */
 }
 
-.dark .calendar-popover {
-  background-color: #1e293b !important;
-  border-color: rgba(255, 255, 255, 0.15);
-  color: #ffffff !important;
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.1);
+.dark #calendar-global-popover {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .calendar-popover-date {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   color: #64748b;
 }
 
