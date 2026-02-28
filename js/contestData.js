@@ -104,6 +104,9 @@ function createCodeChefContest(date) {
   let contestUrl = 'https://www.codechef.com/contests';
   const startersNumber = 167 + Math.floor((date - new Date(2025, 0, 1)) / (7 * 24 * 60 * 60 * 1000));
 
+  const dayOfMonth = date.getDate();
+  let contestName;
+
   if (dayOfMonth <= 7) {
     contestName = `Long Challenge - ${getMonthName(date)} ${date.getFullYear()}`;
     contestUrl = 'https://www.codechef.com/contests';
